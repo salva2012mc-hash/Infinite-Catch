@@ -1,0 +1,445 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global safety net: deny all reads and writes by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(userId) {
+      return isVerifiedUser() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isVerifiedUser() && request.auth.token.email == 'salva2012mc@gmail.com';
+    }
+
+    function isValidPlayerSaveCreate(data, userId) {
+      return data.keys().hasAll([
+          'ownerUid',
+          'coins',
+          'fishCount',
+          'totalCoinsEarned',
+          'playTimeSeconds',
+          'discoveredFish',
+          'ownedCosmetics',
+          'equippedCosmetics',
+          'username',
+          'avatar',
+          'backpackCapacity',
+          'lastUsernameChangeAt',
+          'hasOgTitle',
+          'claimedIndexRewards',
+          'underworldUnlocked',
+          'inventory',
+          'createdAt',
+          'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'ownerUid',
+          'coins',
+          'fishCount',
+          'totalCoinsEarned',
+          'playTimeSeconds',
+          'level',
+          'xp',
+          'totalXp',
+          'discoveredFish',
+          'maxFishWeights',
+          'ownedCosmetics',
+          'equippedCosmetics',
+          'username',
+          'avatar',
+          'characterGender',
+          'backpackCapacity',
+          'lastUsernameChangeAt',
+          'hasOgTitle',
+          'claimedIndexRewards',
+          'claimedLevelRewards',
+          'underworldUnlocked',
+          'inventory',
+          'catchHistory',
+          'seenRarityTutorials',
+          'seenUnderworldIntro',
+          'seenUnderworldMarketIntro',
+          'createdAt',
+          'updatedAt'
+        ])
+        && data.ownerUid is string
+        && isValidId(data.ownerUid)
+        && data.ownerUid == userId
+        && data.ownerUid == request.auth.uid
+        && data.coins is number && data.coins >= 0
+        && data.fishCount is number && data.fishCount >= 0
+        && data.totalCoinsEarned is number && data.totalCoinsEarned >= 0
+        && data.playTimeSeconds is number && data.playTimeSeconds >= 0
+        && (!('level' in data) || (data.level is number && data.level >= 1 && data.level <= 10000))
+        && (!('xp' in data) || (data.xp is number && data.xp >= 0 && data.xp <= 100000000))
+        && (!('totalXp' in data) || (data.totalXp is number && data.totalXp >= 0 && data.totalXp <= 1000000000))
+        && data.discoveredFish is map && data.discoveredFish.size() <= 200
+        && (!('maxFishWeights' in data) || (data.maxFishWeights is map && data.maxFishWeights.size() <= 200))
+        && data.ownedCosmetics is list && data.ownedCosmetics.size() <= 50 && (data.ownedCosmetics.size() == 0 || data.ownedCosmetics[0] is string)
+        && data.equippedCosmetics is list && data.equippedCosmetics.size() <= 50 && (data.equippedCosmetics.size() == 0 || data.equippedCosmetics[0] is string)
+        && data.username is string && data.username.size() >= 1 && data.username.size() <= 32
+        && data.avatar is string && data.avatar.size() >= 1 && data.avatar.size() <= 32
+        && (data.avatar != 'permadeath_admin' || isAdmin())
+        && (!('characterGender' in data) || data.characterGender in ['male', 'female'])
+        && data.backpackCapacity is number && data.backpackCapacity >= 10 && data.backpackCapacity <= 100
+        && data.lastUsernameChangeAt is number && data.lastUsernameChangeAt >= 0
+        && data.hasOgTitle is bool
+        && data.claimedIndexRewards is map && data.claimedIndexRewards.size() <= 200
+        && (!('claimedLevelRewards' in data) || (data.claimedLevelRewards is map && data.claimedLevelRewards.size() <= 200))
+        && data.underworldUnlocked is bool
+        && data.inventory is list && data.inventory.size() <= 100 && (data.inventory.size() == 0 || data.inventory[0] is map)
+        && (!('catchHistory' in data) || (data.catchHistory is list && data.catchHistory.size() <= 10 && (data.catchHistory.size() == 0 || data.catchHistory[0] is map)))
+        && (!('seenRarityTutorials' in data) || (data.seenRarityTutorials is list && data.seenRarityTutorials.size() <= 10 && (data.seenRarityTutorials.size() == 0 || data.seenRarityTutorials[0] is string)))
+        && (!('seenUnderworldIntro' in data) || data.seenUnderworldIntro is bool)
+        && (!('seenUnderworldMarketIntro' in data) || data.seenUnderworldMarketIntro is bool)
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidPlayerSaveUpdate(data, userId) {
+      return data.keys().hasOnly([
+          'ownerUid',
+          'coins',
+          'fishCount',
+          'totalCoinsEarned',
+          'playTimeSeconds',
+          'level',
+          'xp',
+          'totalXp',
+          'discoveredFish',
+          'maxFishWeights',
+          'ownedCosmetics',
+          'equippedCosmetics',
+          'username',
+          'avatar',
+          'characterGender',
+          'backpackCapacity',
+          'lastUsernameChangeAt',
+          'hasOgTitle',
+          'claimedIndexRewards',
+          'claimedLevelRewards',
+          'underworldUnlocked',
+          'inventory',
+          'catchHistory',
+          'seenRarityTutorials',
+          'seenUnderworldIntro',
+          'seenUnderworldMarketIntro',
+          'createdAt',
+          'updatedAt'
+        ])
+        && (!('ownerUid' in data) || (data.ownerUid is string && isValidId(data.ownerUid) && data.ownerUid == userId && data.ownerUid == request.auth.uid))
+        && (!('coins' in data) || (data.coins is number && data.coins >= 0))
+        && (!('fishCount' in data) || (data.fishCount is number && data.fishCount >= 0))
+        && (!('totalCoinsEarned' in data) || (data.totalCoinsEarned is number && data.totalCoinsEarned >= 0))
+        && (!('playTimeSeconds' in data) || (data.playTimeSeconds is number && data.playTimeSeconds >= 0))
+        && (!('level' in data) || (data.level is number && data.level >= 1 && data.level <= 10000))
+        && (!('xp' in data) || (data.xp is number && data.xp >= 0 && data.xp <= 100000000))
+        && (!('totalXp' in data) || (data.totalXp is number && data.totalXp >= 0 && data.totalXp <= 1000000000))
+        && (!('discoveredFish' in data) || (data.discoveredFish is map && data.discoveredFish.size() <= 200))
+        && (!('maxFishWeights' in data) || (data.maxFishWeights is map && data.maxFishWeights.size() <= 200))
+        && (!('ownedCosmetics' in data) || (data.ownedCosmetics is list && data.ownedCosmetics.size() <= 50 && (data.ownedCosmetics.size() == 0 || data.ownedCosmetics[0] is string)))
+        && (!('equippedCosmetics' in data) || (data.equippedCosmetics is list && data.equippedCosmetics.size() <= 50 && (data.equippedCosmetics.size() == 0 || data.equippedCosmetics[0] is string)))
+        && (!('username' in data) || (data.username is string && data.username.size() >= 1 && data.username.size() <= 32))
+        && (!('avatar' in data) || (data.avatar is string && data.avatar.size() >= 1 && data.avatar.size() <= 32 && (data.avatar != 'permadeath_admin' || isAdmin())))
+        && (!('characterGender' in data) || data.characterGender in ['male', 'female'])
+        && (!('backpackCapacity' in data) || (data.backpackCapacity is number && data.backpackCapacity >= 10 && data.backpackCapacity <= 100))
+        && (!('lastUsernameChangeAt' in data) || (data.lastUsernameChangeAt is number && data.lastUsernameChangeAt >= 0))
+        && (!('hasOgTitle' in data) || data.hasOgTitle is bool)
+        && (!('claimedIndexRewards' in data) || (data.claimedIndexRewards is map && data.claimedIndexRewards.size() <= 200))
+        && (!('claimedLevelRewards' in data) || (data.claimedLevelRewards is map && data.claimedLevelRewards.size() <= 200))
+        && (!('underworldUnlocked' in data) || data.underworldUnlocked is bool)
+        && (!('inventory' in data) || (data.inventory is list && data.inventory.size() <= 100 && (data.inventory.size() == 0 || data.inventory[0] is map)))
+        && (!('catchHistory' in data) || (data.catchHistory is list && data.catchHistory.size() <= 10 && (data.catchHistory.size() == 0 || data.catchHistory[0] is map)))
+        && (!('seenRarityTutorials' in data) || (data.seenRarityTutorials is list && data.seenRarityTutorials.size() <= 10 && (data.seenRarityTutorials.size() == 0 || data.seenRarityTutorials[0] is string)))
+        && (!('seenUnderworldIntro' in data) || data.seenUnderworldIntro is bool)
+        && (!('seenUnderworldMarketIntro' in data) || data.seenUnderworldMarketIntro is bool)
+        && (!('createdAt' in data) || data.createdAt is timestamp)
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidLeaderboardCreate(data, userId) {
+      return data.keys().hasAll([
+          'ownerUid',
+          'username',
+          'avatar',
+          'catches',
+          'money',
+          'timeSeconds',
+          'isAdmin',
+          'hasOgTitle',
+          'createdAt',
+          'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'ownerUid',
+          'username',
+          'avatar',
+          'catches',
+          'money',
+          'timeSeconds',
+          'isAdmin',
+          'hasOgTitle',
+          'bestFishId',
+          'discoveredCount',
+          'masteredCount',
+          'underworldUnlocked',
+          'equippedCosmetics',
+          'createdAt',
+          'updatedAt'
+        ])
+        && data.ownerUid is string
+        && isValidId(data.ownerUid)
+        && data.ownerUid == userId
+        && data.ownerUid == request.auth.uid
+        && data.username is string && data.username.size() >= 1 && data.username.size() <= 32
+        && data.avatar is string && data.avatar.size() >= 1 && data.avatar.size() <= 32
+        && (data.avatar != 'permadeath_admin' || isAdmin())
+        && data.catches is number && data.catches >= 0
+        && data.money is number && data.money >= 0
+        && data.timeSeconds is number && data.timeSeconds >= 0
+        && data.isAdmin is bool
+        && (!data.isAdmin || isAdmin())
+        && data.hasOgTitle is bool
+        && (!('bestFishId' in data) || (data.bestFishId is number && data.bestFishId >= 0 && data.bestFishId <= 500))
+        && (!('discoveredCount' in data) || (data.discoveredCount is number && data.discoveredCount >= 0 && data.discoveredCount <= 200))
+        && (!('masteredCount' in data) || (data.masteredCount is number && data.masteredCount >= 0 && data.masteredCount <= 200))
+        && (!('underworldUnlocked' in data) || data.underworldUnlocked is bool)
+        && (!('equippedCosmetics' in data) || (
+          data.equippedCosmetics is list
+          && data.equippedCosmetics.size() <= 50
+          && (data.equippedCosmetics.size() == 0 || data.equippedCosmetics[0] is string)
+        ))
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidLeaderboardUpdate(data, userId) {
+      return data.keys().hasOnly([
+          'ownerUid',
+          'username',
+          'avatar',
+          'catches',
+          'money',
+          'timeSeconds',
+          'isAdmin',
+          'hasOgTitle',
+          'bestFishId',
+          'discoveredCount',
+          'masteredCount',
+          'underworldUnlocked',
+          'equippedCosmetics',
+          'createdAt',
+          'updatedAt'
+        ])
+        && (!('ownerUid' in data) || (data.ownerUid is string && isValidId(data.ownerUid) && data.ownerUid == userId && data.ownerUid == request.auth.uid))
+        && (!('username' in data) || (data.username is string && data.username.size() >= 1 && data.username.size() <= 32))
+        && (!('avatar' in data) || (data.avatar is string && data.avatar.size() >= 1 && data.avatar.size() <= 32 && (data.avatar != 'permadeath_admin' || isAdmin())))
+        && (!('catches' in data) || (data.catches is number && data.catches >= 0))
+        && (!('money' in data) || (data.money is number && data.money >= 0))
+        && (!('timeSeconds' in data) || (data.timeSeconds is number && data.timeSeconds >= 0))
+        && (!('isAdmin' in data) || (data.isAdmin is bool && (!data.isAdmin || isAdmin())))
+        && (!('hasOgTitle' in data) || data.hasOgTitle is bool)
+        && (!('bestFishId' in data) || (data.bestFishId is number && data.bestFishId >= 0 && data.bestFishId <= 500))
+        && (!('discoveredCount' in data) || (data.discoveredCount is number && data.discoveredCount >= 0 && data.discoveredCount <= 200))
+        && (!('masteredCount' in data) || (data.masteredCount is number && data.masteredCount >= 0 && data.masteredCount <= 200))
+        && (!('underworldUnlocked' in data) || data.underworldUnlocked is bool)
+        && (!('equippedCosmetics' in data) || (
+          data.equippedCosmetics is list
+          && data.equippedCosmetics.size() <= 50
+          && (data.equippedCosmetics.size() == 0 || data.equippedCosmetics[0] is string)
+        ))
+        && (!('createdAt' in data) || data.createdAt is timestamp)
+        && data.updatedAt is timestamp;
+    }
+
+    match /playerSaves/{userId} {
+      allow get: if isValidId(userId) && isOwner(userId);
+      allow list: if false;
+
+      allow create: if isValidId(userId)
+        && isOwner(userId)
+        && isValidPlayerSaveCreate(incoming(), userId);
+
+      allow update: if isValidId(userId)
+        && isOwner(userId)
+        && isValidPlayerSaveUpdate(incoming(), userId)
+        && (!('ownerUid' in existing()) || existing().ownerUid == request.auth.uid)
+        && incoming().diff(existing()).affectedKeys().hasOnly([
+          'coins',
+          'fishCount',
+          'totalCoinsEarned',
+          'playTimeSeconds',
+          'level',
+          'xp',
+          'totalXp',
+          'discoveredFish',
+          'maxFishWeights',
+          'ownedCosmetics',
+          'equippedCosmetics',
+          'username',
+          'avatar',
+          'characterGender',
+          'backpackCapacity',
+          'lastUsernameChangeAt',
+          'hasOgTitle',
+          'claimedIndexRewards',
+          'claimedLevelRewards',
+          'underworldUnlocked',
+          'inventory',
+          'catchHistory',
+          'seenRarityTutorials',
+          'seenUnderworldIntro',
+          'seenUnderworldMarketIntro',
+          'updatedAt'
+        ])
+        && incoming().updatedAt is timestamp
+        && (
+          !('underworldUnlocked' in existing())
+          || !existing().underworldUnlocked
+          || incoming().underworldUnlocked == true
+          || isAdmin()
+          || (incoming().fishCount == 0 && incoming().coins == 0 && incoming().totalCoinsEarned == 0)
+        );
+
+      allow delete: if false;
+    }
+
+    match /leaderboard/{userId} {
+      allow get: if isValidId(userId);
+      allow list: if request.query.limit != null
+        && request.query.limit <= 50
+        && (
+          resource.data.catches >= 0
+          || resource.data.money >= 0
+          || resource.data.timeSeconds >= 0
+        );
+
+      allow create: if isValidId(userId)
+        && isOwner(userId)
+        && isValidLeaderboardCreate(incoming(), userId);
+
+      allow update: if isValidId(userId)
+        && isOwner(userId)
+        && isValidLeaderboardUpdate(incoming(), userId)
+        && (!('ownerUid' in existing()) || existing().ownerUid == request.auth.uid)
+        && incoming().diff(existing()).affectedKeys().hasOnly([
+          'username',
+          'avatar',
+          'catches',
+          'money',
+          'timeSeconds',
+          'isAdmin',
+          'hasOgTitle',
+          'bestFishId',
+          'discoveredCount',
+          'masteredCount',
+          'underworldUnlocked',
+          'equippedCosmetics',
+          'updatedAt'
+        ])
+        && incoming().updatedAt is timestamp;
+
+      allow delete: if false;
+    }
+
+    function isOgRodOfferActive() {
+      return request.time < timestamp.value(1795645800000);
+    }
+
+    function isValidOgRodState(data) {
+      return data.keys().hasAll(['claimedCount', 'maxClaims', 'updatedAt'])
+        && data.keys().hasOnly(['claimedCount', 'maxClaims', 'updatedAt'])
+        && data.claimedCount is int
+        && data.claimedCount >= 1
+        && data.maxClaims is int
+        && data.maxClaims >= 0
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidOgRodClaim(data, userId) {
+      return data.keys().hasAll(['ownerUid', 'claimedAt'])
+        && data.keys().hasOnly(['ownerUid', 'claimedAt'])
+        && data.ownerUid is string
+        && isValidId(data.ownerUid)
+        && data.ownerUid == userId
+        && data.ownerUid == request.auth.uid
+        && data.claimedAt is timestamp;
+    }
+
+    match /globalEvents/{eventId} {
+      allow get: if isValidId(eventId) && eventId == 'ogRod';
+      allow list: if false;
+
+      allow create: if isValidId(eventId)
+        && eventId == 'ogRod'
+        && isVerifiedUser()
+        && isOgRodOfferActive()
+        && isValidOgRodState(incoming())
+        && incoming().claimedCount == 1
+        && incoming().updatedAt is timestamp
+        && !exists(/databases/$(database)/documents/globalEvents/ogRod/claims/$(request.auth.uid))
+        && existsAfter(/databases/$(database)/documents/globalEvents/ogRod/claims/$(request.auth.uid));
+
+      allow update: if isValidId(eventId)
+        && eventId == 'ogRod'
+        && isVerifiedUser()
+        && isOgRodOfferActive()
+        && isValidOgRodState(incoming())
+        && incoming().claimedCount == existing().claimedCount + 1
+        && incoming().updatedAt is timestamp
+        && incoming().diff(existing()).affectedKeys().hasOnly(['claimedCount', 'updatedAt'])
+        && !exists(/databases/$(database)/documents/globalEvents/ogRod/claims/$(request.auth.uid))
+        && existsAfter(/databases/$(database)/documents/globalEvents/ogRod/claims/$(request.auth.uid));
+
+      allow delete: if false;
+
+      match /claims/{userId} {
+        allow get: if isValidId(eventId)
+          && eventId == 'ogRod'
+          && isValidId(userId)
+          && isOwner(userId);
+        allow list: if false;
+
+        allow create: if isValidId(eventId)
+          && eventId == 'ogRod'
+          && isValidId(userId)
+          && isOwner(userId)
+          && isOgRodOfferActive()
+          && isValidOgRodClaim(incoming(), userId)
+          && incoming().claimedAt is timestamp
+          && (
+            (!exists(/databases/$(database)/documents/globalEvents/ogRod)
+              && getAfter(/databases/$(database)/documents/globalEvents/ogRod).data.claimedCount == 1)
+            ||
+            (exists(/databases/$(database)/documents/globalEvents/ogRod)
+              && getAfter(/databases/$(database)/documents/globalEvents/ogRod).data.claimedCount == get(/databases/$(database)/documents/globalEvents/ogRod).data.claimedCount + 1)
+          );
+
+        allow update, delete: if false;
+      }
+    }
+  }
+}

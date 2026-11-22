@@ -1,0 +1,6 @@
+{
+  "name": "Pesca en el Hielo",
+  "description": "Juego 2D minimalista de pesca en el hielo — Fase 1.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

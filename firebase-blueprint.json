@@ -1,0 +1,272 @@
+{
+  "entities": {
+    "PlayerSave": {
+      "title": "PlayerSave",
+      "description": "Cloud save state for a player signed in with Google",
+      "type": "object",
+      "properties": {
+        "ownerUid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "coins": {
+          "type": "number"
+        },
+        "fishCount": {
+          "type": "number"
+        },
+        "totalCoinsEarned": {
+          "type": "number"
+        },
+        "playTimeSeconds": {
+          "type": "number"
+        },
+        "level": {
+          "type": "number",
+          "description": "Current player angler level derived from totalXp (starts at 1)"
+        },
+        "xp": {
+          "type": "number",
+          "description": "Current XP progress within the active level"
+        },
+        "totalXp": {
+          "type": "number",
+          "description": "Cumulative XP earned from catching fish"
+        },
+        "discoveredFish": {
+          "type": "object"
+        },
+        "maxFishWeights": {
+          "type": "object",
+          "description": "Maximum recorded weight in kg per species ID"
+        },
+        "ownedCosmetics": {
+          "type": "array"
+        },
+        "equippedCosmetics": {
+          "type": "array"
+        },
+        "username": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "avatar": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "characterGender": {
+          "type": "string",
+          "enum": ["male", "female"],
+          "description": "Selected realistic angler character gender"
+        },
+        "backpackCapacity": {
+          "type": "number"
+        },
+        "lastUsernameChangeAt": {
+          "type": "number"
+        },
+        "hasOgTitle": {
+          "type": "boolean"
+        },
+        "claimedIndexRewards": {
+          "type": "object"
+        },
+        "claimedLevelRewards": {
+          "type": "object",
+          "description": "Map of level numbers whose Reward Road milestone has been claimed"
+        },
+        "underworldUnlocked": {
+          "type": "boolean"
+        },
+        "inventory": {
+          "type": "array"
+        },
+        "catchHistory": {
+          "type": "array",
+          "description": "Last 10 caught fish entries with date and time"
+        },
+        "seenRarityTutorials": {
+          "type": "array",
+          "description": "Rarities whose first-time minigame explanation has been seen"
+        },
+        "seenUnderworldIntro": {
+          "type": "boolean",
+          "description": "Whether the player has seen the first-time Underworld guide"
+        },
+        "seenUnderworldMarketIntro": {
+          "type": "boolean",
+          "description": "Whether the player has seen the first-time Underworld Market guide"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "ownerUid",
+        "coins",
+        "fishCount",
+        "totalCoinsEarned",
+        "playTimeSeconds",
+        "discoveredFish",
+        "ownedCosmetics",
+        "equippedCosmetics",
+        "username",
+        "avatar",
+        "backpackCapacity",
+        "lastUsernameChangeAt",
+        "hasOgTitle",
+        "claimedIndexRewards",
+        "underworldUnlocked",
+        "inventory",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "LeaderboardEntry": {
+      "title": "LeaderboardEntry",
+      "description": "Public leaderboard stats for a player authenticated with Google (no PII)",
+      "type": "object",
+      "properties": {
+        "ownerUid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "username": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "avatar": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "catches": {
+          "type": "number"
+        },
+        "money": {
+          "type": "number"
+        },
+        "timeSeconds": {
+          "type": "number"
+        },
+        "isAdmin": {
+          "type": "boolean"
+        },
+        "hasOgTitle": {
+          "type": "boolean"
+        },
+        "bestFishId": {
+          "type": "number",
+          "description": "Species ID of the player's rarest/best discovered fish (0 if none)"
+        },
+        "discoveredCount": {
+          "type": "number",
+          "description": "Number of unique fish species discovered"
+        },
+        "masteredCount": {
+          "type": "number",
+          "description": "Number of species mastered with 50+ catches"
+        },
+        "underworldUnlocked": {
+          "type": "boolean",
+          "description": "Whether the player has unlocked the Underworld"
+        },
+        "equippedCosmetics": {
+          "type": "array",
+          "description": "Equipped cosmetic item IDs forming the player's current skin"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "ownerUid",
+        "username",
+        "avatar",
+        "catches",
+        "money",
+        "timeSeconds",
+        "isAdmin",
+        "hasOgTitle",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "OgRodEvent": {
+      "title": "OgRodEvent",
+      "description": "Global claim counter for the unlimited 5-day orange OG fishing rod offer (expires 2026-11-25T22:30:00Z)",
+      "type": "object",
+      "properties": {
+        "claimedCount": {
+          "type": "number"
+        },
+        "maxClaims": {
+          "type": "number"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["claimedCount", "maxClaims", "updatedAt"]
+    },
+    "OgRodClaim": {
+      "title": "OgRodClaim",
+      "description": "Per-user claim receipt proving an OG rod was claimed before expiration",
+      "type": "object",
+      "properties": {
+        "ownerUid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "claimedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["ownerUid", "claimedAt"]
+    }
+  },
+  "firestore": {
+    "/playerSaves/{userId}": {
+      "schema": {
+        "$ref": "#/entities/PlayerSave"
+      },
+      "description": "Private cloud save state belonging to the authenticated player."
+    },
+    "/leaderboard/{userId}": {
+      "schema": {
+        "$ref": "#/entities/LeaderboardEntry"
+      },
+      "description": "Public Top 50 leaderboard entries for Google-authenticated players only."
+    },
+    "/globalEvents/{eventId}": {
+      "schema": {
+        "$ref": "#/entities/OgRodEvent"
+      },
+      "description": "Global event counter tracking unlimited OG rod claims during the 5-day expiration window."
+    },
+    "/globalEvents/{eventId}/claims/{userId}": {
+      "schema": {
+        "$ref": "#/entities/OgRodClaim"
+      },
+      "description": "Unique claim record per verified user for the OG fishing rod during the 5-day event."
+    }
+  }
+}
