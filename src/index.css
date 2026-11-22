@@ -1,0 +1,400 @@
+@import "tailwindcss";
+
+@layer base {
+  html,
+  body,
+  #root {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    user-select: none;
+    -webkit-user-select: none;
+    background-color: #dcebf7;
+  }
+}
+
+.font-display {
+  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes masteryMedalPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.35) rotate(-14deg);
+  }
+  16% {
+    opacity: 1;
+    transform: scale(1.1) rotate(3deg);
+  }
+  28% {
+    opacity: 1;
+    transform: scale(0.96) rotate(-1.5deg);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  84% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.9) translateY(-12px);
+  }
+}
+
+@keyframes masterySunburstSpin {
+  0% {
+    transform: rotate(0deg) scale(0.94);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.06);
+  }
+  100% {
+    transform: rotate(360deg) scale(0.94);
+  }
+}
+
+@keyframes masteryShimmerSweep {
+  0% {
+    transform: translateX(-150%) skewX(-22deg);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.95;
+  }
+  55% {
+    transform: translateX(185%) skewX(-22deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(185%) skewX(-22deg);
+    opacity: 0;
+  }
+}
+
+.animate-mastery-pop {
+  animation: masteryMedalPop 4.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-mastery-rays {
+  animation: masterySunburstSpin 7s linear infinite;
+}
+
+.animate-mastery-shimmer {
+  animation: masteryShimmerSweep 1.9s ease-in-out infinite;
+}
+
+@keyframes tutorialGlowPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.85), 0 0 22px rgba(245, 158, 11, 0.85);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(254, 240, 138, 1), 0 0 36px rgba(250, 204, 21, 1);
+  }
+}
+
+@keyframes tutorialArrowUp {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+@keyframes tutorialArrowDown {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-9px);
+  }
+}
+
+@keyframes tutorialSparkle {
+  0%, 100% {
+    transform: scale(0.75) rotate(0deg);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.2) rotate(22deg);
+    opacity: 1;
+  }
+}
+
+.animate-tutorial-glow {
+  animation: tutorialGlowPulse 1.3s ease-in-out infinite;
+}
+
+.animate-tutorial-arrow-up {
+  animation: tutorialArrowUp 0.9s ease-in-out infinite;
+}
+
+.animate-tutorial-arrow-down {
+  animation: tutorialArrowDown 0.9s ease-in-out infinite;
+}
+
+.animate-tutorial-sparkle {
+  animation: tutorialSparkle 1.4s ease-in-out infinite;
+}
+
+@keyframes uiBackdropIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes uiModalIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0) scale(0.955);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes uiPopBounce {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -6px, 0) scale(0.86);
+  }
+  65% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1.03);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.animate-ui-backdrop {
+  animation: uiBackdropIn 0.16s ease-out both;
+  will-change: opacity;
+}
+
+.animate-ui-modal-in {
+  animation: uiModalIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity;
+}
+
+.animate-ui-pop {
+  animation: uiPopBounce 0.24s cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: transform, opacity;
+}
+
+@keyframes fightUrgentPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.55), 0 0 28px rgba(239, 68, 68, 0.38);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.9), 0 0 42px rgba(239, 68, 68, 0.65);
+  }
+}
+
+.animate-fight-urgent {
+  animation: fightUrgentPulse 0.72s ease-in-out infinite;
+}
+
+.btn-arcade {
+  transition:
+    transform 130ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 130ms ease-out,
+    box-shadow 150ms ease-out;
+  will-change: transform;
+}
+
+.btn-arcade:hover:not(:disabled) {
+  transform: translate3d(0, -2px, 0);
+  filter: brightness(1.07);
+}
+
+.btn-arcade:active:not(:disabled) {
+  transform: translate3d(0, 1px, 0) scale(0.97);
+  filter: brightness(0.96);
+}
+
+.btn-arcade:focus-visible {
+  outline: 2px solid #fde047;
+  outline-offset: 2px;
+}
+
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 -45%;
+  width: 38%;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.36) 50%,
+    transparent 100%
+  );
+  transform: translate3d(-120%, 0, 0) skewX(-18deg);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.btn-shine:hover:not(:disabled)::after {
+  opacity: 1;
+  transform: translate3d(420%, 0, 0) skewX(-18deg);
+  transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms ease-out;
+}
+
+@keyframes levelUpGoldGlow {
+  0%, 100% {
+    transform: scale(1.02);
+    box-shadow:
+      0 0 0 2px rgba(254, 240, 138, 0.95),
+      0 0 22px rgba(250, 204, 21, 0.92),
+      0 0 42px rgba(245, 158, 11, 0.65),
+      inset 0 1px 2px rgba(255, 255, 255, 0.9);
+  }
+  50% {
+    transform: scale(1.07);
+    box-shadow:
+      0 0 0 4px rgba(255, 251, 235, 1),
+      0 0 34px rgba(253, 224, 71, 1),
+      0 0 58px rgba(245, 158, 11, 0.9),
+      inset 0 1px 4px rgba(255, 255, 255, 1);
+  }
+}
+
+@keyframes levelUpShimmerSweep {
+  0% {
+    transform: translateX(-140%) skewX(-22deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.95;
+  }
+  55% {
+    transform: translateX(360%) skewX(-22deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(360%) skewX(-22deg);
+    opacity: 0;
+  }
+}
+
+@keyframes levelUpBurstBadge {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-3px) scale(1.06);
+  }
+}
+
+@keyframes worldPortalSpin {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.05);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+@keyframes worldPortalSpinReverse {
+  0% {
+    transform: rotate(360deg) scale(1.04);
+  }
+  50% {
+    transform: rotate(180deg) scale(0.96);
+  }
+  100% {
+    transform: rotate(0deg) scale(1.04);
+  }
+}
+
+@keyframes worldTravelProgress {
+  0% {
+    transform: scaleX(0.06);
+  }
+  50% {
+    transform: scaleX(0.68);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+.animate-levelup-gold-glow {
+  animation: levelUpGoldGlow 1.05s ease-in-out infinite;
+}
+
+.animate-levelup-shimmer {
+  animation: levelUpShimmerSweep 1.45s ease-in-out infinite;
+}
+
+.animate-levelup-burst-badge {
+  animation: levelUpBurstBadge 0.95s ease-in-out infinite;
+}
+
+.animate-portal-spin {
+  animation: worldPortalSpin 6s linear infinite;
+}
+
+.animate-portal-spin-reverse {
+  animation: worldPortalSpinReverse 4.5s linear infinite;
+}
+
+.animate-world-travel-bar {
+  animation: worldTravelProgress 0.92s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-mastery-pop,
+  .animate-mastery-rays,
+  .animate-mastery-shimmer,
+  .animate-tutorial-glow,
+  .animate-tutorial-arrow-up,
+  .animate-tutorial-arrow-down,
+  .animate-tutorial-sparkle,
+  .animate-ui-backdrop,
+  .animate-ui-modal-in,
+  .animate-ui-pop,
+  .animate-fight-urgent,
+  .animate-levelup-gold-glow,
+  .animate-levelup-shimmer,
+  .animate-levelup-burst-badge,
+  .animate-portal-spin,
+  .animate-portal-spin-reverse,
+  .animate-world-travel-bar {
+    animation: none;
+  }
+
+  .btn-arcade,
+  .btn-shine::after {
+    transition: none;
+  }
+
+  .btn-arcade:hover:not(:disabled),
+  .btn-arcade:active:not(:disabled) {
+    transform: none;
+  }
+}
+
